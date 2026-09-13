@@ -1,0 +1,32 @@
+{
+  "kind": "image_viewer",
+  "title": "Image Viewer",
+  "ports": {
+    "inputs": [
+      {
+        "id": 1,
+        "name": "image",
+        "title": "Image",
+        "accepts": [
+          "image/path",
+          "file/path",
+          "message/*",
+          "text/plain"
+        ],
+        "multiplicity": "one",
+        "required": false,
+        "execution_requirement": "required_for_execution"
+      }
+    ],
+    "outputs": []
+  },
+  "config": {},
+  "runtime": {
+    "initial_state": "waiting",
+    "runtime_executable": true,
+    "display_node": true,
+    "active_worker": true,
+    "centralized_executor": "generic",
+    "centralized_dependency_mode": "all_inputs"
+  }
+}
