@@ -7,10 +7,10 @@
 # Created Date: 2026-06-05
 # -----------------------------------------------------------------------------
 
-"""F5.27 - Bloc Image Viewer.
+"""F5.27 - Image Viewer block.
 
-Le test couvre le bloc autonome `image_viewer` comme viewer pur alimente
-uniquement par son port d'entree, en centralized et zeromq_active.
+The test covers the autonomous `image_viewer` block as a pure viewer fed only
+by its input port, in centralized and zeromq_active.
 """
 
 # Test cases:
@@ -103,7 +103,7 @@ def runtime_payload(image_path: str) -> dict:
 
 def render_contract_checks(server, image_path: str) -> None:
     model = json.loads((ROOT / "blocs/image_viewer/model.json").read_text(encoding="utf-8"))
-    expect(model.get("config") == {}, "image_viewer ne doit pas declarer de config durable.")
+    expect(model.get("config") == {}, "image_viewer must not declare persistent config.")
 
     card = surface_payload(server, model, image_viewer_node("viewer-card"), "node_card",
                              runtime=runtime_payload(image_path))
@@ -119,9 +119,9 @@ def render_contract_checks(server, image_path: str) -> None:
     modal_assets = modal.get("assets") or []
     expect("data-image-viewer-modal-root" in modal_html, "Le modal image_viewer doit etre rendu par le bloc.")
     expect('data-block-runtime-refresh="autonomous"' in modal_html, "Le modal image_viewer doit gérer son refresh runtime.")
-    expect("data-image-viewer-source" not in modal_html, "Le modal ne doit pas exposer de champ source persistant.")
-    expect("data-block-config-field" not in modal_html, "Le modal ne doit pas exposer d'option persistante.")
-    expect("image_viewer_update_source" not in modal_html, "Le modal ne doit pas exposer d'action de persistance source.")
+    expect("data-image-viewer-source" not in modal_html, "The modal must not expose a persistent source field.")
+    expect("data-block-config-field" not in modal_html, "The modal must not expose a persistent option.")
+    expect("image_viewer_update_source" not in modal_html, "The modal must not expose a source persistence action.")
     expect("data-image-viewer-zoom-in" in modal_html, "Le modal doit proposer le zoom avant.")
     expect("data-image-viewer-zoom-out" in modal_html, "Le modal doit proposer le zoom arriere.")
     expect("data-image-viewer-fit" in modal_html, "Le modal doit proposer le retour fit.")
@@ -131,8 +131,8 @@ def render_contract_checks(server, image_path: str) -> None:
                              runtime=runtime_payload(image_path))
     inspector_html = str(inspector.get("html") or "")
     inspector_assets = inspector.get("assets") or []
-    expect("data-image-viewer-source" not in inspector_html, "L'inspector ne doit pas exposer de champ source persistant.")
-    expect("data-block-config-field" not in inspector_html, "L'inspector ne doit pas exposer d'option persistante.")
+    expect("data-image-viewer-source" not in inspector_html, "The inspector must not expose a persistent source field.")
+    expect("data-block-config-field" not in inspector_html, "The inspector must not expose a persistent option.")
     expect("Ports" in inspector_html, "L'inspector doit conserver le tab Ports generique.")
 
 
@@ -147,9 +147,9 @@ def run_empty_state_case(server, image_path: str, runtime_mode: str) -> None:
     expect(run.get("status") == "success", f"image_viewer vide doit rester en succes en {runtime_mode}.")
     result = run.get("results", {}).get("viewer-1", {})
     viewer = result.get("image_viewer") if isinstance(result.get("image_viewer"), dict) else {}
-    expect(viewer.get("status") == "empty", f"L'etat vide doit etre explicite en {runtime_mode}: {viewer}")
-    expect(not viewer.get("viewer_path"), "Une source config ne doit pas etre utilisee pour afficher une image.")
-    expect(image_path not in str(result.get("image_viewer") or {}), "Le resultat ne doit pas persister la source configuree.")
+    expect(viewer.get("status") == "empty", f"The empty state must be explicit in {runtime_mode}: {viewer}")
+    expect(not viewer.get("viewer_path"), "A config source must not be used to display an image.")
+    expect(image_path not in str(result.get("image_viewer") or {}), "The result must not persist the configured source.")
     expect("zoom" not in str(result.get("image_viewer") or {}), "Le resultat ne doit pas persister d'option d'affichage.")
 
 
@@ -164,17 +164,17 @@ def run_input_source_case(server, source: str, runtime_mode: str, expected_kind:
     )
     created = create_run_api(server, document, runtime_mode=runtime_mode)
     run = wait_for_run_terminal(server, str(created.get("run_id") or ""))
-    expect(run.get("status") == "success", f"image_viewer doit reussir en {runtime_mode} avec {expected_kind}.")
+    expect(run.get("status") == "success", f"image_viewer must succeed in {runtime_mode} with {expected_kind}.")
     result = run.get("results", {}).get("viewer-1", {})
     viewer = result.get("image_viewer") if isinstance(result.get("image_viewer"), dict) else {}
     expect(viewer.get("source_kind") == expected_kind, f"source_kind inattendu en {runtime_mode}: {viewer}")
     expect(result.get("content_type") == "image/path", f"content_type image_viewer incorrect en {runtime_mode}.")
-    expect("outputs" in result and result.get("outputs") == {}, "image_viewer ne doit pas emettre de sortie.")
-    expect(PNG_BASE64 not in str(result), "image_viewer ne doit pas dupliquer le blob base64 dans son resultat.")
-    expect(not any(str(key).startswith("viewer-1:") for key in (run.get("output_values") or {})), "image_viewer ne doit publier aucune sortie.")
+    expect("outputs" in result and result.get("outputs") == {}, "image_viewer must not emit an output.")
+    expect(PNG_BASE64 not in str(result), "image_viewer must not duplicate the base64 blob in its result.")
+    expect(not any(str(key).startswith("viewer-1:") for key in (run.get("output_values") or {})), "image_viewer must publish no output.")
     if expected_kind in {"base64", "data_uri", "url"}:
         viewer_path = str(viewer.get("viewer_path") or "")
-        expect(viewer_path.endswith("viewer-1.png"), f"source non materialisee en chemin runtime: {viewer}")
+        expect(viewer_path.endswith("viewer-1.png"), f"source not materialized as a runtime path: {viewer}")
     return run
 
 
@@ -189,14 +189,14 @@ def error_case(server, source: str, expected_fragment: str) -> None:
     )
     created = create_run_api(server, document, runtime_mode="centralized")
     run = wait_for_run_terminal(server, str(created.get("run_id") or ""))
-    expect(run.get("status") == "failed", f"La source invalide doit faire echouer le run: {source[:40]}")
+    expect(run.get("status") == "failed", f"The invalid source must fail the run: {source[:40]}")
     result = run.get("results", {}).get("viewer-error", {})
     expect(expected_fragment in str(result.get("error") or result.get("last_message") or ""), f"Erreur inattendue: {result}")
 
 
 def main() -> None:
     with isolated_server() as server:
-        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        # Surfaces are release assets: a bundled kind serves none of them.
         model = install_test_package(server, "image_viewer")
         key = quote(release_key(model), safe="")
         served = lambda payload, suffix: next(
@@ -227,7 +227,7 @@ def main() -> None:
         outside = Path(tempfile.gettempdir()) / "image-viewer-outside.png"
         outside.write_bytes(PNG_BYTES)
         try:
-            error_case(server, str(outside), "hors workspace")
+            error_case(server, str(outside), "outside the workspace")
         finally:
             outside.unlink(missing_ok=True)
 
@@ -237,7 +237,7 @@ def main() -> None:
             method="POST",
             payload={"node": {"id": "image-1", "kind": "image", "title": "Image", "config": {}}},
         )
-        expect("data-image-node-card" in str(image_block.get("html") or ""), "Le bloc image existant doit rester disponible.")
+        expect("data-image-node-card" in str(image_block.get("html") or ""), "The existing image block must stay available.")
     print("[ok] F5.27_image_viewer_block")
 
 

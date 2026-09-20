@@ -437,12 +437,12 @@ class ImageViewerBlock(BlockDefinition):
             resolved.relative_to(root)
         except (OSError, ValueError) as exc:
             if candidate.is_absolute():
-                raise ImageViewerSourceError("chemin local hors workspace non autorise.") from exc
+                raise ImageViewerSourceError("local path outside the workspace is not allowed.") from exc
             return None
         if not resolved.exists():
             return None
         if not resolved.is_file():
-            raise ImageViewerSourceError("source locale non fichier.")
+            raise ImageViewerSourceError("local source is not a file.")
         return resolved
 
     def _looks_like_local_path(self, source: str) -> bool:
