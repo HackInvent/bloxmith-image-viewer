@@ -109,23 +109,23 @@ def render_contract_checks(server, image_path: str) -> None:
                              runtime=runtime_payload(image_path))
     card_html = str(card.get("html") or "")
     card_assets = card.get("assets") or []
-    expect("data-image-viewer-node-card" in card_html, "La carte image_viewer doit etre rendue par le bloc.")
-    expect("<h3" not in card_html and "node-type-pill" not in card_html, "La carte image_viewer ne doit pas afficher de titre ou label.")
-    expect("/api/project-image?path=exports/images/viewer-sample.png" in card_html, "La miniature doit utiliser l'image runtime.")
+    expect("data-image-viewer-node-card" in card_html, "The image_viewer card must be rendered by the block.")
+    expect("<h3" not in card_html and "node-type-pill" not in card_html, "The image_viewer card must not show a title or a label.")
+    expect("/api/project-image?path=exports/images/viewer-sample.png" in card_html, "The thumbnail must use the runtime image.")
 
     modal = surface_payload(server, model, image_viewer_node("viewer-modal"), "modal",
                              runtime=runtime_payload(image_path))
     modal_html = str(modal.get("html") or "")
     modal_assets = modal.get("assets") or []
-    expect("data-image-viewer-modal-root" in modal_html, "Le modal image_viewer doit etre rendu par le bloc.")
-    expect('data-block-runtime-refresh="autonomous"' in modal_html, "Le modal image_viewer doit gérer son refresh runtime.")
+    expect("data-image-viewer-modal-root" in modal_html, "The image_viewer modal must be rendered by the block.")
+    expect('data-block-runtime-refresh="autonomous"' in modal_html, "The image_viewer modal must own its runtime refresh.")
     expect("data-image-viewer-source" not in modal_html, "The modal must not expose a persistent source field.")
     expect("data-block-config-field" not in modal_html, "The modal must not expose a persistent option.")
     expect("image_viewer_update_source" not in modal_html, "The modal must not expose a source persistence action.")
-    expect("data-image-viewer-zoom-in" in modal_html, "Le modal doit proposer le zoom avant.")
-    expect("data-image-viewer-zoom-out" in modal_html, "Le modal doit proposer le zoom arriere.")
-    expect("data-image-viewer-fit" in modal_html, "Le modal doit proposer le retour fit.")
-    expect("data-image-viewer-actual" in modal_html, "Le modal doit proposer l'affichage 100%.")
+    expect("data-image-viewer-zoom-in" in modal_html, "The modal must offer zooming in.")
+    expect("data-image-viewer-zoom-out" in modal_html, "The modal must offer zooming out.")
+    expect("data-image-viewer-fit" in modal_html, "The modal must offer going back to fit.")
+    expect("data-image-viewer-actual" in modal_html, "The modal must offer the 100% view.")
 
     inspector = surface_payload(server, model, image_viewer_node("viewer-inspector"), "inspector_panel",
                              runtime=runtime_payload(image_path))
@@ -133,7 +133,7 @@ def render_contract_checks(server, image_path: str) -> None:
     inspector_assets = inspector.get("assets") or []
     expect("data-image-viewer-source" not in inspector_html, "The inspector must not expose a persistent source field.")
     expect("data-block-config-field" not in inspector_html, "The inspector must not expose a persistent option.")
-    expect("Ports" in inspector_html, "L'inspector doit conserver le tab Ports generique.")
+    expect("Ports" in inspector_html, "The inspector must keep the generic Ports tab.")
 
 
 def run_empty_state_case(server, image_path: str, runtime_mode: str) -> None:
@@ -144,13 +144,13 @@ def run_empty_state_case(server, image_path: str, runtime_mode: str) -> None:
     )
     created = create_run_api(server, document, runtime_mode=runtime_mode)
     run = wait_for_run_terminal(server, str(created.get("run_id") or ""))
-    expect(run.get("status") == "success", f"image_viewer vide doit rester en succes en {runtime_mode}.")
+    expect(run.get("status") == "success", f"An empty image_viewer must stay successful in {runtime_mode}.")
     result = run.get("results", {}).get("viewer-1", {})
     viewer = result.get("image_viewer") if isinstance(result.get("image_viewer"), dict) else {}
     expect(viewer.get("status") == "empty", f"The empty state must be explicit in {runtime_mode}: {viewer}")
     expect(not viewer.get("viewer_path"), "A config source must not be used to display an image.")
     expect(image_path not in str(result.get("image_viewer") or {}), "The result must not persist the configured source.")
-    expect("zoom" not in str(result.get("image_viewer") or {}), "Le resultat ne doit pas persister d'option d'affichage.")
+    expect("zoom" not in str(result.get("image_viewer") or {}), "The result must not persist any display option.")
 
 
 def run_input_source_case(server, source: str, runtime_mode: str, expected_kind: str) -> dict:

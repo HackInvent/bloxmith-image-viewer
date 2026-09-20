@@ -95,7 +95,7 @@ class ImageViewerBlock(BlockDefinition):
             return BlockRuntimeResult(
                 status="success",
                 outputs=[],
-                logs=[f"[image-viewer] {context.node_id}: aucune entree image recue."],
+                logs=[f"[image-viewer] {context.node_id}: no image input received."],
                 last_message=state.message,
                 content_type=TEXT_PLAIN,
                 worker_received=state.message,
@@ -303,7 +303,7 @@ class ImageViewerBlock(BlockDefinition):
         if not image_bytes:
             raise ImageViewerSourceError("URL image vide.")
         if len(image_bytes) > DEFAULT_MAX_BYTES:
-            raise ImageViewerSourceError("URL image trop volumineuse.")
+            raise ImageViewerSourceError("URL image too large.")
         mime_type = self._detect_mime_from_bytes(image_bytes)
         return self._state_from_inline_bytes(
             image_bytes,
@@ -397,16 +397,16 @@ class ImageViewerBlock(BlockDefinition):
         try:
             size = path.stat().st_size
         except OSError as exc:
-            raise ImageViewerSourceError(f"image illisible: {path}") from exc
+            raise ImageViewerSourceError(f"unreadable image: {path}") from exc
         if size <= 0:
-            raise ImageViewerSourceError("image vide non supportee.")
+            raise ImageViewerSourceError("empty image is not supported.")
         if size > DEFAULT_MAX_BYTES:
-            raise ImageViewerSourceError("image trop volumineuse.")
+            raise ImageViewerSourceError("image too large.")
         try:
             with path.open("rb") as handle:
                 head = handle.read(1024)
         except OSError as exc:
-            raise ImageViewerSourceError(f"image illisible: {path}") from exc
+            raise ImageViewerSourceError(f"unreadable image: {path}") from exc
         guessed = mimetypes.guess_type(str(path))[0] or ""
         mime_type = self._detect_mime_from_bytes(head)
         if guessed:
