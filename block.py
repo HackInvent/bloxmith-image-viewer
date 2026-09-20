@@ -77,22 +77,6 @@ class ImageViewerBlock(BlockDefinition):
 
     kind = "image_viewer"
 
-    def ui_assets(self, surface: str = "modal") -> list[dict[str, str]]:
-        """Return Image Viewer assets for node-card, inspector, and modal surfaces.
-
-        Args:
-            surface: UI surface requesting assets.
-        """
-
-        if surface == "modal":
-            return [
-                {"kind": "css", "path": "assets/css/image_viewer.css"},
-                {"kind": "js", "path": "assets/js/block_modal.js"},
-            ]
-        if surface in {"inspector_panel", "node_card"}:
-            return [{"kind": "css", "path": "assets/css/image_viewer.css"}]
-        return []
-
     def execute_runtime(self, context: BlockRuntimeContext) -> BlockRuntimeResult:
         """Resolve the runtime-provided image source into viewer metadata.
 

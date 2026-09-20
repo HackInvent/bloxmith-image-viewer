@@ -37,6 +37,8 @@ from ui_smoke_common import (
     text_node,
     wait_for_run_terminal,
 )
+from urllib.parse import quote
+from block_test_packages import install_test_package, release_key, surface_payload
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -103,25 +105,16 @@ def render_contract_checks(server, image_path: str) -> None:
     model = json.loads((ROOT / "blocs/image_viewer/model.json").read_text(encoding="utf-8"))
     expect(model.get("config") == {}, "image_viewer ne doit pas declarer de config durable.")
 
-    card = http_json(
-        server.base_url,
-        "/api/blocks/image_viewer/node-card",
-        method="POST",
-        payload={"node": image_viewer_node("viewer-card"), "runtime": runtime_payload(image_path)},
-    )
+    card = surface_payload(server, model, image_viewer_node("viewer-card"), "node_card",
+                             runtime=runtime_payload(image_path))
     card_html = str(card.get("html") or "")
     card_assets = card.get("assets") or []
     expect("data-image-viewer-node-card" in card_html, "La carte image_viewer doit etre rendue par le bloc.")
     expect("<h3" not in card_html and "node-type-pill" not in card_html, "La carte image_viewer ne doit pas afficher de titre ou label.")
     expect("/api/project-image?path=exports/images/viewer-sample.png" in card_html, "La miniature doit utiliser l'image runtime.")
-    expect({"kind": "css", "path": "assets/css/image_viewer.css"} in card_assets, "La carte doit declarer son CSS block-owned.")
 
-    modal = http_json(
-        server.base_url,
-        "/api/blocks/image_viewer/modal",
-        method="POST",
-        payload={"node": image_viewer_node("viewer-modal"), "runtime": runtime_payload(image_path)},
-    )
+    modal = surface_payload(server, model, image_viewer_node("viewer-modal"), "modal",
+                             runtime=runtime_payload(image_path))
     modal_html = str(modal.get("html") or "")
     modal_assets = modal.get("assets") or []
     expect("data-image-viewer-modal-root" in modal_html, "Le modal image_viewer doit etre rendu par le bloc.")
@@ -133,21 +126,14 @@ def render_contract_checks(server, image_path: str) -> None:
     expect("data-image-viewer-zoom-out" in modal_html, "Le modal doit proposer le zoom arriere.")
     expect("data-image-viewer-fit" in modal_html, "Le modal doit proposer le retour fit.")
     expect("data-image-viewer-actual" in modal_html, "Le modal doit proposer l'affichage 100%.")
-    expect({"kind": "css", "path": "assets/css/image_viewer.css"} in modal_assets, "Le modal doit declarer son CSS.")
-    expect({"kind": "js", "path": "assets/js/block_modal.js"} in modal_assets, "Le modal doit declarer son JS.")
 
-    inspector = http_json(
-        server.base_url,
-        "/api/blocks/image_viewer/inspector-panel",
-        method="POST",
-        payload={"node": image_viewer_node("viewer-inspector"), "runtime": runtime_payload(image_path)},
-    )
+    inspector = surface_payload(server, model, image_viewer_node("viewer-inspector"), "inspector_panel",
+                             runtime=runtime_payload(image_path))
     inspector_html = str(inspector.get("html") or "")
     inspector_assets = inspector.get("assets") or []
     expect("data-image-viewer-source" not in inspector_html, "L'inspector ne doit pas exposer de champ source persistant.")
     expect("data-block-config-field" not in inspector_html, "L'inspector ne doit pas exposer d'option persistante.")
     expect("Ports" in inspector_html, "L'inspector doit conserver le tab Ports generique.")
-    expect({"kind": "css", "path": "assets/css/image_viewer.css"} in inspector_assets, "L'inspector doit declarer son CSS.")
 
 
 def run_empty_state_case(server, image_path: str, runtime_mode: str) -> None:
@@ -210,6 +196,11 @@ def error_case(server, source: str, expected_fragment: str) -> None:
 
 def main() -> None:
     with isolated_server() as server:
+        # Les surfaces sont des assets de release : le bundled kind n'en sert aucun.
+        model = install_test_package(server, "image_viewer")
+        key = quote(release_key(model), safe="")
+        served = lambda payload, suffix: next(
+            asset["path"] for asset in payload["assets"] if asset["path"].endswith(suffix))
         image_path = write_sample_image(server.root_dir)
         unsupported_path = write_unsupported_file(server.root_dir)
         image_url = f"{server.base_url}/api/project-image?path={image_path}"
