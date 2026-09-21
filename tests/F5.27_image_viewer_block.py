@@ -88,10 +88,10 @@ def runtime_payload(image_path: str) -> dict:
     return {
         "result": {
             "status": "success",
-            "last_message": "Image locale prete.",
+            "last_message": "Local image ready.",
             "image_viewer": {
                 "status": "success",
-                "message": "Image locale prete.",
+                "message": "Local image ready.",
                 "source_kind": "path",
                 "mime_type": "image/png",
                 "byte_size": len(PNG_BYTES),

@@ -1,23 +1,23 @@
 <div class="modal-panel image-viewer-modal" role="dialog" aria-modal="true" aria-labelledby="imageViewerBlockModalTitle" data-image-viewer-modal-root data-block-runtime-refresh="autonomous">
   <div class="modal-header">
     <div>
-      <span class="panel-kicker">Image Viewer</span>
+      <span class="panel-kicker" data-i18n="block.image_viewer.modal_kicker">Image Viewer</span>
       <h2 id="imageViewerBlockModalTitle">{{ title }}</h2>
     </div>
     <div class="modal-actions image-viewer-toolbar">
-      <button class="ghost-btn" data-image-viewer-zoom-out type="button" {{ controls_disabled }} title="Zoom arriere">-</button>
-      <button class="ghost-btn" data-image-viewer-zoom-in type="button" {{ controls_disabled }} title="Zoom avant">+</button>
-      <button class="ghost-btn" data-image-viewer-fit type="button" {{ controls_disabled }}>Fit</button>
+      <button class="ghost-btn" data-image-viewer-zoom-out type="button" {{ controls_disabled }} title="Zoom out" data-i18n-title="block.image_viewer.zoom_out">-</button>
+      <button class="ghost-btn" data-image-viewer-zoom-in type="button" {{ controls_disabled }} title="Zoom in" data-i18n-title="block.image_viewer.zoom_in">+</button>
+      <button class="ghost-btn" data-image-viewer-fit type="button" {{ controls_disabled }} data-i18n="block.image_viewer.fit">Fit</button>
       <button class="ghost-btn" data-image-viewer-actual type="button" {{ controls_disabled }}>100%</button>
-      <button class="primary-btn" data-block-apply type="button">Apply</button>
-      <button class="ghost-btn" data-close-block-modal type="button">Close</button>
+      <button class="primary-btn" data-block-apply type="button" data-i18n="ui.block_kit.apply">Apply</button>
+      <button class="ghost-btn" data-close-block-modal type="button" data-i18n="ui.block_kit.close">Close</button>
     </div>
   </div>
   <div class="image-viewer-modal-body">
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Identite</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="ui.block_kit.identity">Identity</span></div>
       <div class="field-group">
-        <label>Block name</label>
+        <label data-i18n="ui.block_kit.block_name">Block name</label>
         <input data-block-title-field type="text" autocomplete="off" value="{{ title }}" />
       </div>
     </section>
@@ -28,11 +28,11 @@
       </div>
     </section>
     <section class="ports-editor-section">
-      <div class="ports-editor-header"><span class="group-label">Etat</span></div>
+      <div class="ports-editor-header"><span class="group-label" data-i18n="block.image_viewer.state_section">State</span></div>
       <div class="image-viewer-status-grid">
-        <span>Type</span><strong>{{ source_kind }}</strong>
-        <span>MIME</span><strong>{{ mime_type }}</strong>
-        <span>Taille</span><strong>{{ byte_size }}</strong>
+        <span data-i18n="block.image_viewer.type_label">Type</span><strong>{{ source_kind }}</strong>
+        <span data-i18n="block.image_viewer.mime_label">MIME</span><strong>{{ mime_type }}</strong>
+        <span data-i18n="block.image_viewer.size_label">Size</span><strong>{{ byte_size }}</strong>
       </div>
     </section>
   </div>

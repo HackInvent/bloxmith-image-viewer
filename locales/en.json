@@ -1,0 +1,16 @@
+{
+  "block.image_viewer.model.title": "Image Viewer",
+  "block.image_viewer.modal_kicker": "Image Viewer",
+  "block.image_viewer.zoom_out": "Zoom out",
+  "block.image_viewer.zoom_in": "Zoom in",
+  "block.image_viewer.fit": "Fit",
+  "block.image_viewer.actual_size": "100%",
+  "block.image_viewer.state_section": "State",
+  "block.image_viewer.type_label": "Type",
+  "block.image_viewer.mime_label": "MIME",
+  "block.image_viewer.size_label": "Size",
+  "block.image_viewer.no_image": "No image received.",
+  "block.image_viewer.ready_source": "{kind} image ready ({bytes} byte(s)).",
+  "block.image_viewer.ready_local": "Local image ready ({bytes} byte(s)).",
+  "block.image_viewer.ready": "Image ready."
+}

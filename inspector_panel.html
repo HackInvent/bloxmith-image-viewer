@@ -9,14 +9,14 @@
       <span class="inspector-node-tag">{{ node_tag }}</span>
     </div>
     <div class="inspector-tabs">
-      <button class="inspector-tab {{ general_active }}" data-inspector-tab="general" type="button">General</button>
-      <button class="inspector-tab {{ ports_active }} {{ ports_tab_hidden }}" data-inspector-tab="ports" type="button" {{ ports_tab_disabled }}>Ports</button>
+      <button class="inspector-tab {{ general_active }}" data-inspector-tab="general" type="button" data-i18n="ui.block_kit.general">General</button>
+      <button class="inspector-tab {{ ports_active }} {{ ports_tab_hidden }}" data-inspector-tab="ports" type="button" {{ ports_tab_disabled }} data-i18n="ui.block_kit.ports">Ports</button>
     </div>
   </div>
 
   <div class="inspector-view {{ general_hidden }}" data-inspector-panel-tab="general">
     <div class="field-group {{ title_hidden }}">
-      <label>Node name</label>
+      <label data-i18n="ui.block_kit.node_name">Node name</label>
       <input data-node-title-input type="text" placeholder="{{ node_title_placeholder }}" value="{{ node_title }}" />
     </div>
     <div class="image-viewer-inspector-preview {{ image_hidden }}">
@@ -24,32 +24,31 @@
     </div>
     <div class="inspector-copy {{ state_hidden }}">{{ state_text }}</div>
     <div class="image-viewer-status-grid">
-      <span>Type</span><strong>{{ source_kind }}</strong>
-      <span>MIME</span><strong>{{ mime_type }}</strong>
-      <span>Taille</span><strong>{{ byte_size }}</strong>
+      <span data-i18n="block.image_viewer.type_label">Type</span><strong>{{ source_kind }}</strong>
+      <span data-i18n="block.image_viewer.mime_label">MIME</span><strong>{{ mime_type }}</strong>
+      <span data-i18n="block.image_viewer.size_label">Size</span><strong>{{ byte_size }}</strong>
     </div>
   </div>
 
   <div class="inspector-view {{ ports_hidden }}" data-inspector-panel-tab="ports">
     <div class="ports-editor-section">
       <div class="ports-editor-header">
-        <span class="group-label">Inputs</span>
+        <span class="group-label" data-i18n="ui.block_kit.inputs">Inputs</span>
         <span class="ports-editor-actions">
           <button class="ghost-btn add-port-btn {{ add_mcp_input_hidden }}" data-add-mcp-input-port type="button" {{ add_mcp_input_disabled }}>+ MCP</button>
-          <button class="ghost-btn add-port-btn {{ add_input_hidden }}" data-add-input-port type="button" {{ add_input_disabled }}>+ Add an input</button>
+          <button class="ghost-btn add-port-btn {{ add_input_hidden }}" data-add-input-port type="button" {{ add_input_disabled }} data-i18n="ui.block_kit.add_input">+ Add an input</button>
         </span>
       </div>
       <div class="ports-editor-list">{{ inputs_html }}</div>
     </div>
     <div class="ports-editor-section">
       <div class="ports-editor-header">
-        <span class="group-label">Outputs</span>
-        <button class="ghost-btn add-port-btn {{ add_output_hidden }}" data-add-output-port type="button" {{ add_output_disabled }}>+ Add an output</button>
+        <span class="group-label" data-i18n="ui.block_kit.outputs">Outputs</span>
+        <button class="ghost-btn add-port-btn {{ add_output_hidden }}" data-add-output-port type="button" {{ add_output_disabled }} data-i18n="ui.block_kit.add_output">+ Add an output</button>
       </div>
       <div class="ports-editor-list">{{ outputs_html }}</div>
     </div>
-    <div class="inspector-copy">
-      Names are normalized automatically: lowercase, spaces replaced with <code>_</code>.
-    </div>
+    <div class="inspector-copy" data-i18n="ui.block_kit.port_names_hint">
+      Names are normalized automatically: lowercase, spaces replaced by _.</div>
   </div>
 </div>

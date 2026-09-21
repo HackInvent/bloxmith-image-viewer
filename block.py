@@ -91,7 +91,8 @@ class ImageViewerBlock(BlockDefinition):
 
         source = self._runtime_source(context)
         if not source:
-            state = ImageViewerState(status="empty", message="Aucune image recue.")
+            state = ImageViewerState(status="empty", message=self.translate(
+            "block.image_viewer.no_image", fallback="No image received."))
             return BlockRuntimeResult(
                 status="success",
                 outputs=[],
@@ -383,7 +384,9 @@ class ImageViewerBlock(BlockDefinition):
         byte_size = len(image_bytes)
         return ImageViewerState(
             status="success",
-            message=f"Image {source_kind} prete ({byte_size} octet(s)).",
+            message=self.translate("block.image_viewer.ready_source",
+                                   {"kind": source_kind, "bytes": byte_size},
+                                   fallback=f"{source_kind} image ready ({byte_size} byte(s))."),
             source_kind=source_kind,
             mime_type=mime_type,
             byte_size=byte_size,
@@ -414,7 +417,8 @@ class ImageViewerBlock(BlockDefinition):
         display_path = self._relative_path(root_dir, path)
         return ImageViewerState(
             status="success",
-            message=f"Image locale prete ({size} octet(s)).",
+            message=self.translate("block.image_viewer.ready_local", {"bytes": size},
+                                   fallback=f"Local image ready ({size} byte(s))."),
             source_kind="path",
             mime_type=mime_type,
             byte_size=size,
@@ -529,7 +533,8 @@ class ImageViewerBlock(BlockDefinition):
         runtime_state = self._runtime_viewer_state(payload, node)
         if runtime_state is not None:
             return runtime_state
-        return ImageViewerState(status="empty", message="Aucune image recue.")
+        return ImageViewerState(status="empty", message=self.translate(
+            "block.image_viewer.no_image", fallback="No image received."))
 
     def _runtime_viewer_state(self, payload: dict[str, Any], node: dict[str, Any]) -> ImageViewerState | None:
         """Return image state from generic runtime metadata when available."""
@@ -549,7 +554,9 @@ class ImageViewerBlock(BlockDefinition):
         image_src = self._project_image_url(display_path) if display_path and status == "success" else ""
         return ImageViewerState(
             status=status,
-            message=message or ("Image prete." if image_src else "Aucune image recue."),
+            message=message or (self.translate("block.image_viewer.ready", fallback="Image ready.")
+                                if image_src
+                                else self.translate("block.image_viewer.no_image", fallback="No image received.")),
             source_kind=str(viewer.get("source_kind") or ""),
             mime_type=str(viewer.get("mime_type") or ""),
             byte_size=int(viewer.get("byte_size") or 0),

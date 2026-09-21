@@ -1,0 +1,16 @@
+{
+  "block.image_viewer.model.title": "Visionneuse d'image",
+  "block.image_viewer.modal_kicker": "Visionneuse d'image",
+  "block.image_viewer.zoom_out": "Zoom arrière",
+  "block.image_viewer.zoom_in": "Zoom avant",
+  "block.image_viewer.fit": "Ajuster",
+  "block.image_viewer.actual_size": "100%",
+  "block.image_viewer.state_section": "État",
+  "block.image_viewer.type_label": "Type",
+  "block.image_viewer.mime_label": "MIME",
+  "block.image_viewer.size_label": "Taille",
+  "block.image_viewer.no_image": "Aucune image reçue.",
+  "block.image_viewer.ready_source": "Image {kind} prête ({bytes} octet(s)).",
+  "block.image_viewer.ready_local": "Image locale prête ({bytes} octet(s)).",
+  "block.image_viewer.ready": "Image prête."
+}
