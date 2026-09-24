@@ -1,3 +1,5 @@
+import { withProperties } from "./properties.js";
+
 /**
  * Clamp a numeric value between inclusive bounds.
  *
@@ -122,6 +124,11 @@ function mountModal(root) {
  *
  * @param {HTMLElement} root - Mounted modal root.
  */
-export function mount(root) {
+function mountOwned(root) {
   mountModal(root);
+}
+
+/** Keep the block behavior and add properties-only accessibility. */
+export function mount(root, ...args) {
+  return withProperties(mountOwned).call(this, root, ...args);
 }
